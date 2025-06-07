@@ -1,0 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Bona+Nova+SC:ital,wght@0,400;0,700;1,400&family=Outfit:wght@100..900&display=swap');
+@import "tailwindcss";
+
+*{
+  font-family: "Outfit", sans-serif;
+}
+
+::-webkit-scrollbar{
+  display: none;
+}
