@@ -9,8 +9,8 @@ const App = () => {
     <div className="bg-[url('/bgImage.svg')] bg-cover">
         <Routes>
           <Route path='/' element={<HomePage/>}/>
-          <Route path='login' element={<LoginPage/>}/>
-          <Route path='profile' element={<ProfilePage/>}/>
+          <Route path='/login' element={<LoginPage/>}/>
+          <Route path='/profile' element={<ProfilePage/>}/>
  
         </Routes>
     </div>
