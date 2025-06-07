@@ -18,6 +18,17 @@ import pic1 from './pic1.png';
 import pic2 from './pic2.png';
 import pic3 from './pic3.png';
 import pic4 from './pic4.png';
+import pic5 from './pic5.jpg';
+import pic6 from './pic6.jpg';
+import pic7 from './pic7.jpg';
+import pic8 from './pic8.jpg';
+import pic9 from './pic9.jpg';
+import pic10 from './pic10.jpg';
+import pic11 from './pic11.jpg';
+import pic12 from './pic12.jpg';
+import pic13 from './pic13.jpg';
+import pic14 from './pic14.jpg';
+import pic15 from './pic15.jpg';
 import img1 from './img1.jpg';
 import img2 from './img2.jpg';
 
@@ -38,45 +49,49 @@ const assets = {
 
 export default assets;
 
-export const imagesDummyData = [pic1, pic2, pic3, pic4, pic1, pic2];
-
+export const imagesDummyData = [
+  pic14, pic12, pic3, pic4, pic5, 
+  pic6, pic7, pic8, pic9, pic10, 
+  pic11, pic2, pic13, pic1, pic15,
+];
 export const userDummyData = [
   {
     _id: '680f50aaf10f3cd28382ecf2',
     email: 'test1@greatstack.dev',
-    fullName: 'Alison Martin',
+    fullName: 'Emily Johnson',
     profilePic: profile_alison,
-    bio: 'Hi Everyone, I am Using QuickChat',
+    bio: 'Hey there! Loving the QuickChat vibe 🚀',
   },
   {
     _id: '680f50e4f10f3cd28382ecf9',
     email: 'test2@greatstack.dev',
-    fullName: 'Martin Johnson',
+    fullName: 'Jake Anderson',
     profilePic: profile_martin,
-    bio: 'Hi Everyone, I am Using QuickChat',
+    bio: 'QuickChat is where the magic happens ✨',
   },
   {
     _id: '680f510af10f3cd28382ed01',
     email: 'test3@greatstack.dev',
-    fullName: 'Enrique Martinez',
+    fullName: 'Michael Brown',
     profilePic: profile_enrique,
-    bio: 'Hi Everyone, I am Using QuickChat',
+    bio: 'Always up for a great conversation on QuickChat! 😊',
   },
   {
     _id: '680f5137f10f3cd28382ed10',
     email: 'test4@greatstack.dev',
-    fullName: 'Marco Jones',
+    fullName: 'John Cena',
     profilePic: profile_marco,
-    bio: 'Hi Everyone, I am Using QuickChat',
+    bio: 'QuickChat: The best place to connect and share ideas 💡',
   },
   {
     _id: '680f516cf10f3cd28382ed11',
     email: 'test5@greatstack.dev',
-    fullName: 'Richard Smith',
+    fullName: 'David Miller',
     profilePic: profile_richard,
-    bio: 'Hi Everyone, I am Using QuickChat',
+    bio: 'QuickChat + coffee = the ultimate duo ☕💬',
   },
 ];
+
 
 export const messagesDummyData = [
   {

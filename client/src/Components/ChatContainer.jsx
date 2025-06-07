@@ -49,10 +49,13 @@ const ChatContainer = ({ selectedUser, setSelectedUser }) => {
           >
             {/* Message Content */}
             {message.image ? (
-              <img
-                className="max-w-[230px] border border-gray-700 rounded-lg overflow-hidden mb-8"
+              <img onClick={()=> window.open(message.image,"_blank")}
+                className={`max-w-[230px] border border-gray-700 rounded-lg overflow-hidden mb-8 ${
+                  message.senderId === "680f50e4f10f3cd28382ecf9"
+                    ? "rounded-br-none text-right ml-auto"
+                    : "rounded-bl-none text-left mr-auto"
+                } `}
                 src={message.image}
-                alt="Message Attachment"
               />
             ) : (
               <p
@@ -90,18 +93,27 @@ const ChatContainer = ({ selectedUser, setSelectedUser }) => {
 
       <div className="absolute bottom-0 left-0 right-0 flex items-center gap-3 p-3">
         <div className="flex flex-1 items-center bg-gray-100/12 px-3 rounded-full">
-            <input type="text" placeholder="Send a message..." className="flex-1 text-sm p-3 border-none outline-none rounded-lg text-white placeholder-gray-400 " />
-            <input type="file" id="image" accept="image/png , image/jpeg" hidden/>
-            <label htmlFor="image">
-                <img src={assets.gallery_icon} alt="" className="w-5 mr-2 cursor-pointer" />
-            </label>
+          <input
+            type="text"
+            placeholder="Send a message..."
+            className="flex-1 text-sm p-3 border-none outline-none rounded-lg text-white placeholder-gray-400 "
+          />
+          <input
+            type="file"
+            id="image"
+            accept="image/png , image/jpeg"
+            hidden
+          />
+          <label htmlFor="image">
+            <img
+              src={assets.gallery_icon}
+              alt=""
+              className="w-5 mr-2 cursor-pointer"
+            />
+          </label>
         </div>
         <img src={assets.send_button} className="w-7 cursor-pointer" />
-
       </div>
-
-    
-
     </div>
   ) : (
     /* Fallback View */
