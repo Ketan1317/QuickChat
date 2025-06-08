@@ -19,7 +19,7 @@ const LoginPage = () => {
       setIsSubmitted(true);
       return;
     }
-    // login(currentState==="Sign Up" ? "signup" : "login",{fullName,email,password,bio})
+    login(currentState==="Sign Up" ? "signup" : "login",{fullName,email,password,bio})
 
   };
 

@@ -12,7 +12,7 @@ export const getAllUsers = async (req, res) => {
         // Now Count The number of messages that has not be SEEN
         const unseenMessages = {}
         const promises = filteredUser.map(async (user) => {
-            const messsages = await Message.find({ senderId: user._id, recieverId: userId, seen: false })
+            const messsages = await Message.find({ senderId: user._id, receiverId: userId, seen: false })
             if (messsages.length > 0) {
                 unseenMessages[user._id] = messsages.length;
             }
@@ -34,12 +34,12 @@ export const getMessages = (async (req, res) => {
 
         const messages = await Message.find({
             $or: [
-                { senderId: myId, recieverId: selectedUserId },
-                { senderId: selectedUserId, recieverId: myId }
+                { senderId: myId, receiverId: selectedUserId },
+                { senderId: selectedUserId, receiverId: myId }
             ]
         })
         await Message.updateMany(
-            { senderId: selectedUserId, recieverId: myId, seen: false },
+            { senderId: selectedUserId, receiverId: myId, seen: false },
             { seen: true }
         );
 
@@ -77,13 +77,13 @@ export const sendMessage = (async (req, res) => {
         }
 
         const newMessage = await Message.create({
-            senderId, recieverId, text, image: imageUrl
+            senderId, receiverId, text, image: imageUrl
         });
 
-        // emit the new message to the recievers socket
-        const recieverSocketId = userSocketMap[receiverId];
-        if (recieverSocketId) {
-            io.to(recieverSocketId).emit("newMessage", newMessage)
+        // emit the new message to the receivers socket
+        const receiverSocketId = userSocketMap[receiverId];
+        if (receiverSocketId) {
+            io.to(receiverSocketId).emit("newMessage", newMessage)
         }
         res.json({ success: true, newMessage })
 
