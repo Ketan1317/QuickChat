@@ -1,32 +1,63 @@
-import React, { useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import assets from "../assets/assets";
+import { AuthContext } from "../../context/AuthContext";
+import { toast } from "react-hot-toast";
 
 const ProfilePage = () => {
-  const [selectedImage, setSelectedImage] = useState(null);
-  const navigate = useNavigate();
-  const [name, setName] = useState("Garvit Gandu");
-  const [bio, setBio] = useState(
-    "Mujhse Bhardwaj kabhi nahi Pategi.....Mujhe Sirf Be faltu ka bajna aata hai 💦"
-  );
+  const { authUser, updateProfile } = useContext(AuthContext);
 
-  const onSubmitHandler = (e) => {
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [name, setName] = useState(authUser?.fullname || "");
+  const [bio, setBio] = useState(authUser?.bio || "");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (selectedImage) {
+      const objectUrl = URL.createObjectURL(selectedImage);
+      return () => URL.revokeObjectURL(objectUrl); 
+    }
+  }, [selectedImage]);
+
+  const onSubmitHandler = async (e) => {
     e.preventDefault();
-    // Save logic here
-    navigate("/");
+    if (!name || !bio) {
+      toast.error("Name and Bio are required.");
+      return;
+    }
+
+    try {
+      if (!selectedImage) {
+        await updateProfile({ fullname: name, bio });
+      } else {
+        const reader = new FileReader();
+        reader.readAsDataURL(selectedImage);
+        reader.onload = async () => {
+          const base64Image = reader.result;
+          await updateProfile({ fullname: name, bio, profilePic: base64Image });
+        };
+        reader.onerror = () => {
+          throw new Error("Failed to read the selected image.");
+        };
+      }
+
+      toast.success("Profile updated successfully!");
+      navigate("/");
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || error.message;
+      toast.error(errorMessage);
+    }
   };
 
   return (
     <div className="h-screen bg-cover bg-no-repeat flex items-center justify-center">
       <div className="w-5/6 max-w-2xl backdrop-blur-2xl text-gray-300 border-2 border-gray-600 flex items-center justify-between max-sm:flex-col-reverse rounded-lg">
-        {/* Form Section */}
         <form
           className="flex flex-col gap-5 p-10 flex-1"
           onSubmit={onSubmitHandler}
         >
           <h3 className="text-lg font-semibold">Profile Details</h3>
 
-          {/* Profile Image Upload */}
           <label
             htmlFor="avatar"
             className="flex items-center gap-3 cursor-pointer"
@@ -52,7 +83,6 @@ const ProfilePage = () => {
             <span>Upload Profile Image</span>
           </label>
 
-          {/* Name Input */}
           <input
             placeholder="Your Name..."
             onChange={(e) => setName(e.target.value)}
@@ -62,7 +92,6 @@ const ProfilePage = () => {
             className="p-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500"
           />
 
-          {/* Bio Textarea */}
           <textarea
             rows={4}
             onChange={(e) => setBio(e.target.value)}
@@ -72,7 +101,6 @@ const ProfilePage = () => {
             className="p-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500"
           ></textarea>
 
-          {/* Save Button */}
           <button
             type="submit"
             className="bg-gradient-to-r from-purple-400 to-violet-600 text-white p-2 rounded-full text-lg cursor-pointer"
@@ -81,10 +109,11 @@ const ProfilePage = () => {
           </button>
         </form>
 
-        {/* Logo Section */}
         <img
-          className="w-36 h-36 rounded-full mx-10 max-sm:mt-10 object-cover shadow-lg"
-          src={assets.logo_big}
+          className={`w-36 h-36 rounded-full mx-10 max-sm:mt-10 object-cover ${
+            selectedImage && "rounded-full"
+          } shadow-lg`}
+          src={authUser.profilePic || assets.logo_big}
           alt="Logo"
         />
       </div>

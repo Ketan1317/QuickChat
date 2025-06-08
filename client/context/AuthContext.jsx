@@ -1,4 +1,4 @@
-import React , { Children, createContext, useEffect, useState } from "react";
+import React , { createContext, useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { io } from "socket.io-client";
@@ -15,17 +15,35 @@ export const AuthProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
 
   // Check If the User is Authenticated or Not, If so then set the User Data and connect the Socket
-  const checkAuth = async () => {
-    try {
-      const { data } = await axios.get("/api/auth/check");
-      if (data.success) {
-        setAuthUser(data.user);
-        connectSocket(data.user); 
-      }
-    } catch (error) {
-      toast.error(error.message);
+  useEffect(() => {
+  if (token) {
+    axios.defaults.headers.common["Authorization"] = `Bearer ${token}`; // Use Authorization header
+    checkAuth();
+  } else {
+    setAuthUser(null); // Clear authUser if no token
+  }
+}, [token]);
+
+const checkAuth = async () => {
+  try {
+    const { data } = await axios.get("/api/auth/check");
+    if (data.success) {
+      setAuthUser(data.user);
+      connectSocket(data.user);
+    } else {
+      // Clear token if check fails
+      localStorage.removeItem("token");
+      setToken(null);
+      setAuthUser(null);
+      toast.error("Session expired. Please log in again.");
     }
-  };
+  } catch (error) {
+    localStorage.removeItem("token");
+    setToken(null);
+    setAuthUser(null);
+    toast.error("Authentication failed. Please log in again." + error.message);
+  }
+};
 
 
   // Login Function to Handle User Authentication and Socket Connection
@@ -68,28 +86,30 @@ export const AuthProvider = ({ children }) => {
 
 // Update profile function to handle User Profile Updates
     const updateProfile = async (body) => {
-      try { 
-        const {data} = await axios.put("/api/auth/update-profile",body)
-          if(data.success){
-            setAuthUser(data.user)
-            toast.success("Profile Updated successfully")
+    try {
+      console.log(body)
+        // Make the PUT request to update the profile
+        const { data } = await axios.put("/api/auth/update-profile", body);
+      console.log(data)
 
-          
+
+        if (data.success) {
+            setAuthUser(data.user);
+            toast.success("Profile updated successfully");
+        } else {
+            // Handle unexpected response structure
+            toast.error("Failed to update profile. Please try again.");
         }
-      } catch (error) {
-        toast.error(error.message)
-        
-      }
+    } catch (error) {
+        // Handle server or network errors
+            toast.error(error.message);
     }
+};
 
 
 
-  useEffect(() => {
-    if (token) {
-      axios.defaults.headers.common["token"] = token;
-    }
-    checkAuth();
-  }, []);
+
+  
 
   const connectSocket = (userData) => {
     if (!userData || socket?.connected) return;

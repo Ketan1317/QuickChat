@@ -39,7 +39,7 @@ io.on("connection", (socket) => {
 });
 
 // Middleware and Routes
-app.use(express.json({ limit: "4mb" }));
+app.use(express.json({ limit: "20mb" }));
 app.use(cors());
 
 app.use("/api/status", (req, res) => res.send("Server is Live"));
