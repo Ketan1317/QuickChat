@@ -1,25 +1,26 @@
-// Middleware to protect Routes
-import User from "../Models/user.js";
-import {verifyToken} from "../Services/utils.js"
+import jwt from "jsonwebtoken";
 
-export const protectRoute = async(req,res,next) => {
-    try{
-        const token = req.headers.token;
-        const decoded = verifyToken(token);
+export const protectRoute = async (req, res, next) => {
+  try {
+    const token = req.headers.token;
 
-        const user = await User.findById(decoded.userId).select("-password");
-        // The .select("-password") ensures the password is not included in the returned user object for security reasons.
-
-        if(!user){
-            return res.json({success:false,message:"User Not Found"})
-        }
-        req.user = user;
-        next();
-
+    if (!token) {
+      return res.status(401).json({ success: false, message: "Token not provided" });
     }
-    catch(error){
-        console.log(error.message);
-        res.json({success:false,message:error.message})
 
+    console.log("Received Token:", token);
+    console.log("JWT Secret verify krte time:", process.env.JWT_SECRET);
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = await User.findById(decoded.userId).select("-password");
+
+    if (!req.user) {
+      return res.status(404).json({ success: false, message: "User not found" });
     }
-}
+
+    next();
+  } catch (error) {
+    console.error(error.message);
+    res.status(401).json({ success: false, message: "Invalid token" });
+  }
+};

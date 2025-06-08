@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import assets from "../assets/assets";
+import { AuthContext } from "../../context/AuthContext";
 
 const LoginPage = () => {
   const [currentState, setCurrentState] = useState("Sign Up");
@@ -9,6 +10,8 @@ const LoginPage = () => {
   const [bio, setBio] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
 
+  const { login } = useContext(AuthContext);
+
   const onSubmitHandler = (event) => {
     event.preventDefault();
 
@@ -16,18 +19,14 @@ const LoginPage = () => {
       setIsSubmitted(true);
       return;
     }
+    // login(currentState==="Sign Up" ? "signup" : "login",{fullName,email,password,bio})
 
-    // Add logic to handle form submission, such as API calls
   };
 
   return (
     <div className="min-h-screen bg-cover bg-center flex items-center justify-center gap-8 sm:justify-evenly max-sm:flex-col backdrop-blur-2xl">
       {/* Left Section */}
-      <img
-        src={assets.logo_big}
-        alt="Logo"
-        className="w-[min(30vw,250px)]"
-      />
+      <img src={assets.logo_big} alt="Logo" className="w-[min(30vw,250px)]" />
 
       {/* Right Section */}
       <form

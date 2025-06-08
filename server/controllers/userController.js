@@ -3,7 +3,7 @@ import cloudinary from "../Services/cloudinary.js";
 import { generateToken } from "../Services/utils.js";
 import bcrypt from "bcryptjs";
 
-// Controller to Sign Up page
+// function to Sign Up page
 export const signup = async (req, res) => {
     const { fullName, password, email, bio } = req.body;
 
@@ -37,7 +37,7 @@ export const signup = async (req, res) => {
     }
 };
 
-// Controller User Login
+// function User Login
 export const login = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -65,12 +65,12 @@ export const login = async (req, res) => {
     }
 };
 
-// Controller to check whether User is Authenticated
+// function to check whether User is Authenticated
 export const checkAuth = (req, res) => {
     res.json({ success: true, user: req.user });
 };
 
-// Controller to Update Profile
+// function to Update Profile
 export const updateProfile = async (req, res) => {
     try {
         const { profilePic, fullName, bio } = req.body;
