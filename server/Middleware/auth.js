@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 
 export const protectRoute = async (req, res, next) => {
   try {
-    const token = req.headers.token;
+    const token = req.headers["authorization"];
 
     if (!token) {
       return res.status(401).json({ success: false, message: "Token not provided" });
@@ -12,7 +12,8 @@ export const protectRoute = async (req, res, next) => {
     console.log("JWT Secret verify krte time:", process.env.JWT_SECRET);
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = await User.findById(decoded.userId).select("-password");
+    console.log(decoded.userId)
+    req.user = decoded.userId
 
     if (!req.user) {
       return res.status(404).json({ success: false, message: "User not found" });
