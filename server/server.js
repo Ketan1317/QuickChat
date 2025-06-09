@@ -30,7 +30,7 @@ io.on("connection", (socket) => {
         userSocketMap[userId] = socket.id;
     }
 
-    //  creates a hashmap in which every user has assinged a unique socket id ==> userSocketMap[userId] = socket.id;
+//  creates a hashmap in which every user has assinged a unique socket id ==> userSocketMap[userId] = socket.id;
 
     socket.on("getOnlineUsersRequest", () => {
         const onlineUserIds = Object.keys(userSocketMap); // Get all online user IDs
@@ -66,11 +66,6 @@ app.use("/api/messages", messageRouter);
 // Database Connection
 await connectDB();
 
-if (process.env.NODE_ENV !== "production") {
-    // Start the HTTP server
-    const PORT = process.env.PORT || 5000;
-    httpServer.listen(PORT, () => console.log("Server started at: " + PORT));
-}
-
-// export the server for Vercel
-export default Server;
+// Start the HTTP server
+const PORT = process.env.PORT || 5000;
+httpServer.listen(PORT, () => console.log("Server started at: " + PORT));
