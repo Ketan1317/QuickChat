@@ -2,8 +2,6 @@ import User from "../Models/user.js";
 import cloudinary from "../Services/cloudinary.js";
 import { generateToken } from "../Services/utils.js";
 import bcrypt from "bcryptjs";
-import { upload } from "../server.js";
-
 
 // function to Sign Up page
 export const signup = async (req, res) => {
@@ -73,38 +71,27 @@ export const checkAuth = (req, res) => {
 };
 
 // function to Update Profile
-
 export const updateProfile = async (req, res) => {
     try {
-        const { fullName, bio } = req.body;
+        const { profilePic, fullName, bio } = req.body;
         const userId = req.user._id;
 
-        console.log("Request Body:", req.body);
-        console.log("User ID:", userId);
+        console.log("Request Body:", req.body); // Log the request body
+        console.log("User ID:", userId); // Log the user ID
 
         let updatedUser;
-        if (!req.file) {
+        if (!profilePic) {
             updatedUser = await User.findByIdAndUpdate(
                 userId,
                 { fullName, bio },
                 { new: true }
             );
         } else {
-            const upload = await cloudinary.uploader.upload_stream(
-                { folder: "profiles" },
-                (error, result) => {
-                    if (error) {
-                        throw new Error("Cloudinary upload failed: " + error.message);
-                    }
-                    return result;
-                }
-            );
+            const upload = await cloudinary.uploader.upload(profilePic, {
+                folder: "profiles",
+            });
 
-            const bufferStream = require("stream").PassThrough();
-            bufferStream.end(req.file.buffer);
-            bufferStream.pipe(upload);
-
-            console.log("Uploaded Profile Pic URL:", upload.secure_url);
+            console.log("Uploaded Profile Pic URL:", upload.secure_url); // Log the uploaded URL
 
             updatedUser = await User.findByIdAndUpdate(
                 userId,
@@ -113,7 +100,7 @@ export const updateProfile = async (req, res) => {
             );
         }
 
-        console.log("Updated User:", updatedUser);
+        console.log("Updated User:", updatedUser); 
 
         res.json({ success: true, user: updatedUser });
     } catch (error) {

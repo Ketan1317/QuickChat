@@ -113,7 +113,7 @@ const ProfilePage = () => {
           className={`w-36 h-36 rounded-full mx-10 max-sm:mt-10 object-cover ${
             selectedImage && "rounded-full"
           } shadow-lg`}
-          src={authUser.profilePic || assets.logo_big}
+          src={authUser.profilePic || assets.avatar_icon}
           alt="Logo"
         />
       </div>

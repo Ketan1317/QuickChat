@@ -118,7 +118,7 @@ const ChatContainer = () => {
                 alt="Sender Profile"
                 className="w-7 rounded-full"
               />
-              <p className="text-gray-500">
+              <p className="text-gray-700">
                 {formatMessageTime(message.createdAt)}
               </p>
             </div>

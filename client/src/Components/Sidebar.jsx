@@ -29,12 +29,10 @@ const Sidebar = () => {
         selectedUser ? "max-md:hidden" : ""
       }`}
     >
-      {/* Logo and Menu */}
       <div className="pb-5">
         <div className="flex items-center justify-between">
           <img src={assets.logo_icon} className="max-w-40" alt="Logo" />
 
-          {/* Menu Icon with Dropdown */}
           <div className="group relative py-2">
             <img
               src={assets.menu_icon}
@@ -100,7 +98,7 @@ const Sidebar = () => {
                   className={
                     onlineUser.includes(user._id)
                       ? "text-green-400 text-xs"
-                      : "text-[14px] font-medium text-neutral-700"
+                      : "text-[12px] font-medium text-neutral-400"
                   }
                 >
                   {onlineUser.includes(user._id) ? "Online" : "Offline"}

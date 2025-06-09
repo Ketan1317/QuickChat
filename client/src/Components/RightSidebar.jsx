@@ -45,9 +45,9 @@ const RightSidebar = () => {
 
         {/* Media Section */}
         <div className="px-5 text-sm">
-          <p className="font-semibold text-lg text-xl text-gray-400">Media</p>
+          <p className="font-bold  text-xl text-gray-400">Media</p>
           <div className="mt-3 max-h-[200px] overflow-y-scroll grid grid-cols-2 gap-3">
-            {msgImages.map((pic, index) => (
+            {imagesDummyData.map((pic, index) => (
               <div
                 key={index}
                 onClick={() => window.open(pic, "_blank")}
