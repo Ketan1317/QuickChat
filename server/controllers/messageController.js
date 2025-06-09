@@ -64,35 +64,38 @@ export const markMessageSeen = (async (req, res) => {
 })
 
 // Send message to Selected User 
-export const sendMessage = (async (req, res) => {
-    try {
-        const { text, image } = req.body;
-        const senderId = req.params.id;
-        const receiverId = req.user._id;
+export const sendMessage = async (req, res) => {
+  try {
+    const { text, image } = req.body;
+    const receiverId = req.params.id; // Get receiverId from URL parameter
+    const senderId = req.user._id;
 
-        let imageUrl;
-        if (image) {
-            const uploadRespose = await cloudinary.uploader.upload(image);
-            imageUrl = uploadRespose.secure_url;
-        }
-
-        const newMessage = await Message.create({
-            senderId, receiverId, text, image: imageUrl
-        });
-
-        // emit the new message to the receivers socket
-        const receiverSocketId = userSocketMap[receiverId];
-        if (receiverSocketId) {
-            io.to(receiverSocketId).emit("newMessage", newMessage)
-        }
-        res.json({ success: true, newMessage })
-
-
-
-    } catch (error) {
-        console.log(error.message);
-        res.json({ success: false, message: error.message })
+    let imageUrl;
+    if (image) {
+      try {
+        const uploadResponse = await cloudinary.uploader.upload(image);
+        imageUrl = uploadResponse.secure_url;
+      } catch (uploadError) {
+        console.error("Image upload failed:", uploadError.message);
+        return res.json({ success: false, message: "Image upload failed" });
+      }
     }
 
+    const newMessage = await Message.create({
+      senderId,
+      receiverId,
+      text,
+      image: imageUrl,
+    });
 
-})
+    const receiverSocketId = userSocketMap[receiverId];
+    if (receiverSocketId) {
+      io.to(receiverSocketId).emit("newMessage", newMessage);
+    }
+
+    res.json({ success: true, newMessage });
+  } catch (error) {
+    console.error(error.message);
+    res.json({ success: false, message: error.message });
+  }
+};

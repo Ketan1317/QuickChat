@@ -73,9 +73,11 @@ export const checkAuth = (req, res) => {
 // function to Update Profile
 export const updateProfile = async (req, res) => {
     try {
-      console.log(req.user)
-        const { profilePic, fullName, bio } = req.user;
+        const { profilePic, fullName, bio } = req.body;
         const userId = req.user._id;
+
+        console.log("Request Body:", req.body); // Log the request body
+        console.log("User ID:", userId); // Log the user ID
 
         let updatedUser;
         if (!profilePic) {
@@ -88,12 +90,17 @@ export const updateProfile = async (req, res) => {
             const upload = await cloudinary.uploader.upload(profilePic, {
                 folder: "profiles",
             });
+
+            console.log("Uploaded Profile Pic URL:", upload.secure_url); // Log the uploaded URL
+
             updatedUser = await User.findByIdAndUpdate(
                 userId,
-                { profilePic: upload.secure_url, bio, fullName },
+                { profilePic: upload.secure_url, fullName, bio },
                 { new: true }
             );
         }
+
+        console.log("Updated User:", updatedUser); 
 
         res.json({ success: true, user: updatedUser });
     } catch (error) {
@@ -101,4 +108,5 @@ export const updateProfile = async (req, res) => {
         res.status(500).json({ success: false, message: error.message });
     }
 };
+
 
