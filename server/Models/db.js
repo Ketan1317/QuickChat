@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 
 export const connectDB = async () => {
     try {
+        console.log("trying")
         await mongoose.connect(`${process.env.MONGO_DB_URL}/chat-app`);
 
         console.log("MongoDB Connected");

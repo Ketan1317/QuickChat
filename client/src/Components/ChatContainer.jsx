@@ -56,8 +56,8 @@ const ChatContainer = () => {
         />
         <p className="flex-1 text-lg text-white flex items-center gap-2">
           {selectedUser.fullName}
-          {onlineUser.includes(selectedUser._id)}
-          <span className="w-2 h-2 rounded-full bg-green-500"></span>
+          {onlineUser.includes(selectedUser._id) &&
+          <span className="w-2 h-2 rounded-full bg-green-500"></span>}
         </p>
         {/* Back Button for Small Screens */}
         <img
@@ -138,7 +138,7 @@ const ChatContainer = () => {
             type="text"
             placeholder="Send a message..."
             className="flex-1 text-sm p-3 border-none outline-none rounded-lg text-white placeholder-gray-400 "
-          />j 
+          />
           <input
           onChange={handleSendImage}
             type="file"

@@ -6,7 +6,7 @@ import assets from "../assets/assets";
 
 const Sidebar = () => {
   const { logout, onlineUser } = useContext(AuthContext);
-  const { selectedUser, setSelectedUser, unseenMessages, users, getUsers } =
+  const { selectedUser, setSelectedUser, unseenMessages,setUnseenMessages ,users, getUsers } =
     useContext(ChatContext);
   const navigate = useNavigate();
   const [input, setInput] = useState("");
@@ -78,7 +78,10 @@ const Sidebar = () => {
           filteredUsers.map((user) => (
             <div
               key={user._id}
-              onClick={() => setSelectedUser(user)}
+              onClick={() => {
+                setSelectedUser(user);
+                setUnseenMessages((prev) => ({ ...prev, [user._id]: 0 }));
+              }}
               className={`relative flex cursor-pointer items-center gap-2 rounded p-2 pl-4 hover:bg-[#282142]/30 max-sm:text-sm ${
                 selectedUser?._id === user._id ? "bg-[#282142]/50" : ""
               }`}
@@ -92,12 +95,12 @@ const Sidebar = () => {
 
               {/* User Details */}
               <div className="flex flex-col leading-5">
-                <p className="truncate">{user.fullName || "Unknown User"}</p>
+                <p className="truncate text-lg">{user.fullName || "Unknown User"}</p>
                 <span
                   className={
                     onlineUser.includes(user._id)
                       ? "text-green-400 text-xs"
-                      : "text-xs text-neutral-400"
+                      : "text-[14px] font-medium text-neutral-700"
                   }
                 >
                   {onlineUser.includes(user._id) ? "Online" : "Offline"}

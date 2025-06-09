@@ -10,14 +10,14 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem("token") || null);
-  const [authUser, setAuthUser] = useState(null);  // current user
-  const [onlineUser, setOnlineUser] = useState([]);  // all the online users
-  const [socket, setSocket] = useState(null);  // socket connection
+  const [authUser, setAuthUser] = useState(null); // current user
+  const [onlineUser, setOnlineUser] = useState([]); // all the online users
+  const [socket, setSocket] = useState(null); // socket connection
 
   // Check authentication status and reconnect socket on refresh
   useEffect(() => {
     if (token) {
-      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;  // Setting the token to req.headers.authorization for all http requests 
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`; // Setting the token to req.headers.authorization for all http requests
       //                                                                   ==> Authorization: Bearer <your-token>
 
       checkAuth();
@@ -125,6 +125,9 @@ export const AuthProvider = ({ children }) => {
 
     newSocket.on("connect_error", (error) => {
       toast.error("Socket connection failed: " + error.message);
+    });
+    newSocket.on("connection_error", (data) => {
+      toast.error(data.message); // Display the error message from the server
     });
 
     newSocket.connect();

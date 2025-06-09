@@ -1,12 +1,26 @@
-import React from 'react';
-import assets, { imagesDummyData } from '../assets/assets';
+import React, { useContext, useEffect, useState } from "react";
+import assets, { imagesDummyData } from "../assets/assets";
+import { ChatContext } from "../../context/ChatContext";
+import { AuthContext } from "../../context/AuthContext";
 
-const RightSidebar = ({ selectedUser }) => {
+const RightSidebar = () => {
+  const { selectedUser, messages } = useContext(ChatContext);
+  const { logout, onlineUsers } = useContext(AuthContext);
+  const [ msgImages, setMsgImages ] = useState([]);
+
+ // extract all images from messages and show them in album
+  useEffect(() => {
+    setMsgImages(
+      messages.filter(msg => msg.image).map(msg => msg.image)
+    )
+
+  },[messages])
+
   return (
     selectedUser && (
       <div
         className={`bg-[#8185B2]/10 text-white w-full relative overflow-y-scroll ${
-          selectedUser ? 'max-md:hidden' : ''
+          selectedUser ? "max-md:hidden" : ""
         }`}
       >
         {/* User Info Section */}
@@ -16,10 +30,13 @@ const RightSidebar = ({ selectedUser }) => {
             src={selectedUser?.profilePic || assets.avatar_icon}
           />
           <h1 className="text-lg font-bold flex items-center gap-2">
-            <span className="w-3 h-3 rounded-full bg-green-500"></span>
+            {Array.isArray(onlineUsers) && onlineUsers.includes(selectedUser?._id) && (
+  <span className="w-3 h-3 rounded-full bg-green-500"></span>
+)}
+
             {selectedUser.fullName}
           </h1>
-          <p className="px-5 text-center text-gray-300 italic">
+          <p className="px-5 text-lg text-center text-gray-300 italic">
             {selectedUser.bio}
           </p>
         </div>
@@ -28,24 +45,21 @@ const RightSidebar = ({ selectedUser }) => {
 
         {/* Media Section */}
         <div className="px-5 text-sm">
-          <p className="font-semibold text-gray-400">Media</p>
+          <p className="font-semibold text-lg text-xl text-gray-400">Media</p>
           <div className="mt-3 max-h-[200px] overflow-y-scroll grid grid-cols-2 gap-3">
-            {imagesDummyData.map((pic, index) => (
+            {msgImages.map((pic, index) => (
               <div
                 key={index}
-                onClick={() => window.open(pic, '_blank')}
+                onClick={() => window.open(pic, "_blank")}
                 className="cursor-pointer hover:opacity-90 transition-opacity"
               >
-                <img
-                  src={pic}
-                  className="rounded-md shadow-md"
-                />
+                <img src={pic} className="rounded-md shadow-md" />
               </div>
             ))}
           </div>
         </div>
 
-        <button className="absolute bottom-6 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-purple-400 to-violet-600 text-white font-medium py-2 px-16 rounded-full shadow-lg hover:scale-105 transition-transform">
+        <button onClick={() => logout()} className="absolute bottom-6 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-purple-400 to-violet-600 text-white font-medium py-2 px-16 rounded-full shadow-lg hover:scale-105 transition-transform">
           Logout
         </button>
       </div>
