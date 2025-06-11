@@ -61,35 +61,37 @@ export const ChatProvider = ({ children }) => {
   }
 };
 
-  // Subscribe to new messages via socket
-  const subscribeToMessages = () => {
-    if (!socket) return;
 
-    socket.on("newMessage", (newMessage) => {
-      if (selectedUser && newMessage.senderId === selectedUser._id) {
-        setMessages((prev) => [...prev, { ...newMessage, seen: true }]);
-        axios
-          .put(`/api/messages/mark/${newMessage._id}`)
-          .catch(() => toast.error("Failed to mark message as seen"));
-      } else {
-        setUnseenMessages((prev) => ({
-          ...prev,
-          [newMessage.senderId]: (prev[newMessage.senderId] || 0) + 1,
-        }));
-      }
-    });
-  };
+const subscribeToMessages = () => {
+  if (!socket) return;
 
-  // Unsubscribe from messages
-  const unsubscribeToMessages = () => {
-    if (socket) socket.off("newMessage");
-  };
+  socket.on("newMessage", (newMessage) => {
+    if (selectedUser && newMessage.senderId === selectedUser._id) {
+      setMessages((prev) => [...prev, { ...newMessage, seen: true }]);
+      axios
+        .put(`/api/messages/mark/${newMessage._id}`)
+        .catch(() => toast.error("Failed to mark message as seen"));
+    } else {
+      setUnseenMessages((prev) => ({
+        ...prev,
+        [newMessage.senderId]: (prev[newMessage.senderId] || 0) + 1,
+      }));
+    }
+  });
+};
 
-  // Set up socket listeners and cleanup
-  useEffect(() => {
+// Unsubscribe from messages
+const unsubscribeToMessages = () => {
+  if (socket) socket.off("newMessage");
+};
+
+// Set up socket listeners and cleanup
+useEffect(() => {
+  if (socket) {
     subscribeToMessages();
-    return unsubscribeToMessages;
-  }, [socket, selectedUser]);
+    return () => unsubscribeToMessages();
+  }
+}, [socket, selectedUser]);
 
   const value = {
     messages,

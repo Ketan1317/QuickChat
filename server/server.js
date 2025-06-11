@@ -6,7 +6,6 @@ import "dotenv/config";
 import { connectDB } from "./Models/db.js";
 import messageRouter from "./Routes/message.Router.js";
 import { Server } from "socket.io";
-import { error } from "console";
 
 // Create Express App and HTTP Server
 const app = express();
@@ -24,7 +23,6 @@ export const userSocketMap = {}; // { userId: SocketId }
 io.on("connection", (socket) => {
     const userId = socket.handshake.query.userId; // Extract userId from query parameters
     console.log("User connected: ", userId);
-
 
     if (userId) {
         userSocketMap[userId] = socket.id;
@@ -58,6 +56,7 @@ io.on("connection", (socket) => {
 // Middleware and Routes
 app.use(express.json({ limit: "20mb" }));
 app.use(cors());
+
 
 app.use("/api/status", (req, res) => res.send("Server is Live"));
 app.use("/api/auth", userRouter);
